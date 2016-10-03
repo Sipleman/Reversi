@@ -157,7 +157,6 @@ func (field *GameField) isAround(x, y, player int) bool {
 }
 
 func (field *GameField) makeStep(x, y int) int{
-
 	playerNumb := field.CurrentPlayer.playerNumber
 	enemyNumb := 2
 	if playerNumb == 1{
@@ -207,43 +206,6 @@ func (field *GameField) makeStep(x, y int) int{
 
 	}
 	return scores
-
-	//for cnt:=0; cnt<len(field.velocities); cnt++ {
-	//	var length int
-	//	if field.velocities[cnt].x!=0{
-	//		length = len(field.Field) + (field.velocities[cnt].x*x)-1
-	//	}
-	//	if field.velocities[cnt].y!=0{
-	//		length = len(field.Field[0]) + (field.velocities[cnt].y*y)-1
-	//	}
-	//	current_x := x
-	//	current_y := y
-	//	isLine := false
-	//	for i:=0; i<length; i++ {
-	//		current_x += field.velocities[cnt].x
-	//		current_y += field.velocities[cnt].y
-	//		if !field.isInField(current_x, current_y) || field.Field[current_x][current_y]==0 {
-	//			break
-	//		}
-	//
-	//		if field.Field[current_x][current_y] == playerNumb && !isLine {
-	//			break
-	//		}else if isLine{
-	//			for j:=0; j<int(math.Abs(float64(current_x-x))); j++ {
-	//				current_x-=field.velocities[cnt].x
-	//				current_y-=field.velocities[cnt].y
-	//				field.Field[current_x][current_y] = playerNumb
-	//
-	//				scores+=1
-	//			}
-	//		}
-	//		if field.Field[current_x][current_y] == enemyNumb {
-	//			isLine=true
-	//		}
-	//
-	//	}
-	//}
-	//return scores
 }
 
 func (field *GameField) isOutOfRange(tmp int) bool{
