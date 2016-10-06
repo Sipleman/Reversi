@@ -12,12 +12,13 @@ type GameField struct{
 	player1_scores int
 	player2_scores int
 
+	indent velocity
+
 	player1_step bool
 	velocities [8]velocity
-	paramx int
-	paramy int
-	paramas int
+
 	text *tl.Text
+
 }
 
 type velocity struct {
@@ -37,6 +38,7 @@ func New() GameField{
 	game.Field[4][4] = 1
 	game.Field[4][3] = 2
 	game.Field[3][4] = 2
+	game.indent = velocity{x:20, y:10}
 	game.velocities = [8]velocity{
 		velocity{x:0, y:-1,},
 		velocity{x:1, y:-1,},
@@ -56,24 +58,29 @@ func (field *GameField) Draw(screen *tl.Screen){
 		for j:=0; j<len(field.Field[0]); j++ {
 
 			if field.Field[i][j] == 0{
-				screen.RenderCell(i, j, &tl.Cell{Fg: tl.ColorRed, Ch: '+'})
+				screen.RenderCell(i*2 + field.indent.x, j + field.indent.y, &tl.Cell{Fg: tl.ColorRed, Ch: '+'})
 			}
 			if field.Field[i][j] == 1{
-				screen.RenderCell(i, j, &tl.Cell{
+				screen.RenderCell(i*2 + field.indent.x, j + field.indent.y, &tl.Cell{
 					Fg: tl.ColorGreen,
-					Ch: '█',
+					Ch: '■',
 				})
 			}
 			if field.Field[i][j] == 2{
-				screen.RenderCell(i, j, &tl.Cell{
+				screen.RenderCell(i*2 + field.indent.x, j + field.indent.y, &tl.Cell{
 					Fg: tl.ColorWhite,
-					Ch: '█',
+					Ch: '■',
 				})
 			}
 
 		}
 	}
-	field.CurrentPlayer.Entity.Draw(screen)
+	x, y := field.CurrentPlayer.Entity.Position()
+
+	screen.RenderCell(x*2 + field.indent.x, y + field.indent.y, &tl.Cell{
+		Fg: field.getPlayerColor(),
+		Ch: '■',
+	})
 	field.text.SetText("green scores: " + strconv.Itoa(field.player1_scores)+ " white scores:" + strconv.Itoa(field.player2_scores))
 	field.text.Draw(screen)
 }
@@ -101,8 +108,7 @@ func (field *GameField) Tick(event tl.Event){
 				field.CurrentPlayer.Entity.SetPosition(x, y + 1)
 			}
 		case tl.KeyEnter:
-			field.paramx = x
-			field.paramy = y
+
 			score := field.makeStep(x,y)
 			if score!=0{
 				field.Field[x][y] = field.CurrentPlayer.playerNumber
@@ -181,7 +187,6 @@ func (field *GameField) makeStep(x, y int) int{
 				break
 			}
 			if field.Field[current_x][current_y] == 0 {
-				field.paramas++
 				break
 			}
 			if field.Field[current_x][current_y] == enemyNumb {
@@ -194,8 +199,7 @@ func (field *GameField) makeStep(x, y int) int{
 				for i > 0 {
 					current_x -= field.velocities[cnt].x
 					current_y -= field.velocities[cnt].y
-					field.paramx=field.velocities[cnt].x
-					field.paramy=field.velocities[cnt].y
+
 					scores += 1
 					field.Field[current_x][current_y] = playerNumb
 					i--
@@ -213,4 +217,13 @@ func (field *GameField) isOutOfRange(tmp int) bool{
 		return true
 	}
 	return false
+}
+
+func (field *GameField) getPlayerColor() tl.Attr{
+	if field.CurrentPlayer.playerNumber == 1{
+		return tl.ColorGreen
+	}else if field.CurrentPlayer.playerNumber == 2{
+		return tl.ColorWhite
+	}
+	return tl.ColorRed
 }
