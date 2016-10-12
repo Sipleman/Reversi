@@ -151,17 +151,6 @@ func (field *GameField) isInField(x, y int) bool{
 	}
 	return true
 }
-
-func (field *GameField) isStepIsValid(x, y, player int){
-
-}
-func (field *GameField) isAround(x, y, player int) bool {
-	if field.Field[x+1][y+1] == player || field.Field[x-1][y-1] == player {
-		return true
-	}
-	return  false
-}
-
 func (field *GameField) makeStep(x, y int) int{
 	playerNumb := field.CurrentPlayer.playerNumber
 	enemyNumb := 2
@@ -211,14 +200,6 @@ func (field *GameField) makeStep(x, y int) int{
 	}
 	return scores
 }
-
-func (field *GameField) isOutOfRange(tmp int) bool{
-	if tmp<0 || tmp>=len(field.Field){
-		return true
-	}
-	return false
-}
-
 func (field *GameField) getPlayerColor() tl.Attr{
 	if field.CurrentPlayer.playerNumber == 1{
 		return tl.ColorGreen
