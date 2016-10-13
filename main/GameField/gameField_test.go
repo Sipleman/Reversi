@@ -1,10 +1,23 @@
 package GameField
 
-import "testing"
+import (
+	"testing"
+)
 
 type testPair struct{
 	function bool
 	result bool
+}
+
+var field1 = [8][8]int{
+{0, 0, 0, 0, 0, 0, 0, 0},
+{0, 0, 1, 2, 2, 2, 1, 0},
+{0, 0, 0, 2, 1, 2, 1, 0},
+{0, 0, 0, 1, 0, 0, 0, 0},
+{0, 0, 1, 2, 1, 0, 0, 0},
+{0, 0, 0, 0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0, 0, 0, 0},
 }
 
 var tests = []testPair{
@@ -14,7 +27,7 @@ var tests = []testPair{
 	{getIsInFieldResult(11, 11), false},
 	{getIsInFieldResult(1, 15), false},
 	{getIsInFieldResult(1123, -1), false},
-	{getRecalculationResult(), true},
+	{getRecalculationResult(field1), true},
 }
 
 func TestGameField(t *testing.T){
@@ -33,20 +46,21 @@ func getIsInFieldResult(x, y int) bool{
 	gameField := New()
 	return gameField.isInField(x, y)
 }
-func getRecalculationResult() bool{
+func getRecalculationResult(field [8][8]int) bool{
 	gameField := New()
-	field := [8][8]int{
-		{0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 1, 2, 2, 2, 1, 0},
-		{0, 0, 0, 2, 1, 2, 1, 0},
-		{0, 0, 0, 1, 0, 0, 0, 0},
-		{0, 0, 1, 2, 1, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0},
-	}
 	gameField.Field = field
 	gameField.recalculation()
-	return gameField.player2_scores == 6 && gameField.player1_scores == 7
+	return gameField.player2_scores == calcScores(field, 2) && gameField.player1_scores == calcScores(field, 1)
+}
+func calcScores(field [8][8]int, player int) int{
+	result := 0
+	for i:=0; i<8; i++{
+		for j:=0; j<8;j++{
+			if field[i][j] == player {
+				result++
+			}
+		}
+	}
+	return result
 }
 //func getMakeStepResult(){}
